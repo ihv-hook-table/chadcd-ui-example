@@ -36,7 +36,7 @@ export const useTable = <T extends TableRecord = TableRecord>() => {
     components: {
       Table,
       TableHeader,
-      TableHead: (props) => <TableHead {...props} />,
+      TableHead,
       TableBody,
       TableRow,
       TableData: TableCell,

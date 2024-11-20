@@ -1,8 +1,25 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
+import { TableCaptionProps } from "@ihv/react-hook-table";
 
-const getAlignmentClass = (alignment: string) => `text-${alignment}`;
+type AlignmentProps = {
+  alignment?: "left" | "center" | "right";
+};
+
+const hookTableClasses = cva("", {
+  variants: {
+    alignment: {
+      left: "text-left",
+      center: "text-center",
+      right: "text-right",
+    },
+  },
+  defaultVariants: {
+    alignment: "left",
+  },
+});
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -70,18 +87,16 @@ TableRow.displayName = "TableRow";
 
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement> & { alignment?: string }
+  React.ThHTMLAttributes<HTMLTableCellElement> & AlignmentProps
 >(({ className, ...props }, ref) => {
   const { alignment, ...rest } = props;
-
-  const contentAlignmentClass = `text-${alignment || "left"}`;
 
   return (
     <th
       ref={ref}
       className={cn(
         "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        contentAlignmentClass,
+        hookTableClasses({ alignment }),
         className
       )}
       {...rest}
@@ -92,19 +107,16 @@ TableHead.displayName = "TableHead";
 
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  // Extra prop from @ihv/react-hook-table
-  React.TdHTMLAttributes<HTMLTableCellElement> & { alignment: string }
+  React.TdHTMLAttributes<HTMLTableCellElement> & AlignmentProps
 >(({ className, ...props }, ref) => {
   const { alignment, ...rest } = props;
-
-  const contentAlignmentClass = getAlignmentClass(alignment);
 
   return (
     <td
       ref={ref}
       className={cn(
         "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        contentAlignmentClass,
+        hookTableClasses({ alignment }),
         className
       )}
       {...rest}
@@ -115,7 +127,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement>
+  React.HTMLAttributes<HTMLTableCaptionElement> & TableCaptionProps
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}

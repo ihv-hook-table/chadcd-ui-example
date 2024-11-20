@@ -25,11 +25,7 @@ function App() {
   const { Table, Column } = useTable<TableData>();
 
   return (
-    <Table
-      data={mockData}
-      isLoading={false}
-      caption={{ value: "Example table with default components" }}
-    >
+    <Table data={mockData} isLoading={false}>
       {/* <Column
         expandable
         defaultExpanded={({ id }) => ["Row 2", "Row 4"].includes(id)}
