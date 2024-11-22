@@ -1,8 +1,8 @@
 import "./App.css";
 import { useTable } from "@/components/react-hook-form/useTable";
-import { AdditionalData, mockData, TableData } from "./mock-data";
+import { mockData, TableData } from "./mock-data";
 import { formatMoney } from "@/components/react-hook-form/format-functions";
-
+/*
 type SubTableProps = {
   data: AdditionalData;
 };
@@ -20,12 +20,18 @@ const Subtable = ({ data }: SubTableProps) => {
     </Table>
   );
 };
-
+*/
 function App() {
   const { Table, Column } = useTable<TableData>();
 
   return (
-    <Table data={mockData} isLoading={false}>
+    <Table
+      data={mockData}
+      isLoading={false}
+      caption={{
+        value: "Example table rendering with chadcn/ui table elements",
+      }}
+    >
       {/* <Column
         expandable
         defaultExpanded={({ id }) => ["Row 2", "Row 4"].includes(id)}

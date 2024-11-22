@@ -2,12 +2,14 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-import { TableCaptionProps } from "@ihv/react-hook-table";
 
 type AlignmentProps = {
   alignment?: "left" | "center" | "right";
 };
 
+/**
+ * @ihv/react-hook-table alignment classes
+ */
 const hookTableClasses = cva("", {
   variants: {
     alignment: {
@@ -73,29 +75,35 @@ TableFooter.displayName = "TableFooter";
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
   React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => (
-  <tr
-    ref={ref}
-    className={cn(
-      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  return (
+    <tr
+      ref={ref}
+      className={cn(
+        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 TableRow.displayName = "TableRow";
 
+/**
+ * TableHead props type receives alignment prop from @ihv/react-hook-table
+ */
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement> & AlignmentProps
+  React.ThHTMLAttributes<HTMLTableCellElement> &
+    AlignmentProps & { isMulti?: boolean }
 >(({ className, ...props }, ref) => {
-  const { alignment, ...rest } = props;
+  const { alignment, isMulti, ...rest } = props;
 
   return (
     <th
       ref={ref}
       className={cn(
-        "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-10 px-2 text-nowrap text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         hookTableClasses({ alignment }),
         className
       )}
@@ -105,17 +113,21 @@ const TableHead = React.forwardRef<
 });
 TableHead.displayName = "TableHead";
 
+/**
+ * TableCell props type receives alignment prop from @ihv/react-hook-table
+ */
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement> & AlignmentProps
+  React.TdHTMLAttributes<HTMLTableCellElement> &
+    AlignmentProps & { isMulti?: boolean; expandable?: boolean }
 >(({ className, ...props }, ref) => {
-  const { alignment, ...rest } = props;
+  const { alignment, isMulti, expandable, ...rest } = props;
 
   return (
     <td
       ref={ref}
       className={cn(
-        "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "p-2 align-middle text-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         hookTableClasses({ alignment }),
         className
       )}
@@ -127,7 +139,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement> & TableCaptionProps
+  React.HTMLAttributes<HTMLTableCaptionElement>
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}

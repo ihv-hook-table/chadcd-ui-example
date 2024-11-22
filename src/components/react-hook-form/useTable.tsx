@@ -10,6 +10,7 @@ import { MoneyType } from "@/mock-data";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -41,6 +42,7 @@ export const useTable = <T extends TableRecord = TableRecord>() => {
       TableRow,
       TableData: TableCell,
       TableFooter,
+      TableCaption,
     },
   });
 

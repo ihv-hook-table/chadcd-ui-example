@@ -12,7 +12,8 @@ dist
 dist-ssr
 *.local
 .yarn
-
+.yalc
+yalc.lock
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
