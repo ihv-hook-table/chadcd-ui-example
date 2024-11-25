@@ -494,13 +494,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ihv/react-hook-table@npm:^0.3.5":
-  version: 0.3.5
-  resolution: "@ihv/react-hook-table@npm:0.3.5"
+"@ihv/react-hook-table@npm:^0.3.7":
+  version: 0.3.7
+  resolution: "@ihv/react-hook-table@npm:0.3.7"
   peerDependencies:
     react: ^18.3.1
     react-dom: ^18.3.1
-  checksum: 79446d138d58d538ad57f48a062dfb064972399cc9550fc7a9f19992a8dfd997a9bcf254c181a1746f3dbbabb3741498fbae15bfe7f085cea4974fbc78716a16
+  checksum: 56f8c59974189a7647a83806608897661127b4277ef46ee8187b63e35eaec691f7f53d75ee7654037d87bf2740538fcf3e5453a0b8e415a43698331d68abe2f2
   languageName: node
   linkType: hard
 
@@ -1200,7 +1200,7 @@ __metadata:
   resolution: "chadcn-ui-example@workspace:."
   dependencies:
     "@eslint/js": ^9.13.0
-    "@ihv/react-hook-table": ^0.3.5
+    "@ihv/react-hook-table": ^0.3.7
     "@types/node": ^22.9.0
     "@types/react": ^18.3.12
     "@types/react-dom": ^18.3.1

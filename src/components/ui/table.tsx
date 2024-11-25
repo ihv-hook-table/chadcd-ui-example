@@ -2,24 +2,45 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-
-type AlignmentProps = {
-  alignment?: "left" | "center" | "right";
-};
+import {
+  ColumnAlignmentProps,
+  TableCaptionProps,
+  TableRowProps,
+} from "@ihv/react-hook-table";
 
 /**
  * @ihv/react-hook-table alignment classes
  */
-const hookTableClasses = cva("", {
+const columnClasses = cva("", {
   variants: {
     alignment: {
       left: "text-left",
       center: "text-center",
       right: "text-right",
     },
+    isMultiValue: {
+      true: "align-top",
+      false: "align-middle",
+    },
   },
   defaultVariants: {
     alignment: "left",
+  },
+});
+
+const captionClasses = cva("", {
+  variants: {
+    alignment: {
+      "top-left": "caption-top text-left ",
+      "top-center": "caption-top text-center",
+      "top-right": "caption-top text-right",
+      "bottom-left": "caption-bottom text-left",
+      "bottom-center": "caption-bottom text-center",
+      "bottom-right": "caption-bottom text-right",
+    },
+  },
+  defaultVariants: {
+    alignment: "top-center",
   },
 });
 
@@ -74,8 +95,8 @@ TableFooter.displayName = "TableFooter";
 
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => {
+  React.HTMLAttributes<HTMLTableRowElement> & TableRowProps
+>(({ className, expanded, ...props }, ref) => {
   return (
     <tr
       ref={ref}
@@ -90,21 +111,23 @@ const TableRow = React.forwardRef<
 TableRow.displayName = "TableRow";
 
 /**
- * TableHead props type receives alignment prop from @ihv/react-hook-table
+ * TableHead receives  couple of extra props from @ihv/react-hook-table.
+ * alignment - to adjust column alignment. Default is "left".
+ * isMultiValue - boolean that indicates if some of the cells has multiple headers.
+ * Can be used to adjust vertical alignment for example.
  */
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement> &
-    AlignmentProps & { isMulti?: boolean }
+  React.ThHTMLAttributes<HTMLTableCellElement> & ColumnAlignmentProps
 >(({ className, ...props }, ref) => {
-  const { alignment, isMulti, ...rest } = props;
+  const { alignment, isMultiValue, ...rest } = props;
 
   return (
     <th
       ref={ref}
       className={cn(
         "h-10 px-2 text-nowrap text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        hookTableClasses({ alignment }),
+        columnClasses({ alignment, isMultiValue }),
         className
       )}
       {...rest}
@@ -114,21 +137,24 @@ const TableHead = React.forwardRef<
 TableHead.displayName = "TableHead";
 
 /**
- * TableCell props type receives alignment prop from @ihv/react-hook-table
+ * TableCell receives  couple of extra props from @ihv/react-hook-table.
+ * alignment - to adjust column alignment. Default is "left".
+ * isMultiValue - boolean that indicates if some of the cells has multiple headers.
+ * Can be used to adjust vertical alignment for example.
  */
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement> &
-    AlignmentProps & { isMulti?: boolean; expandable?: boolean }
+    ColumnAlignmentProps & { expandable?: boolean }
 >(({ className, ...props }, ref) => {
-  const { alignment, isMulti, expandable, ...rest } = props;
+  const { alignment, isMultiValue, expandable, ...rest } = props;
 
   return (
     <td
       ref={ref}
       className={cn(
         "p-2 align-middle text-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        hookTableClasses({ alignment }),
+        columnClasses({ alignment, isMultiValue }),
         className
       )}
       {...rest}
@@ -137,17 +163,29 @@ const TableCell = React.forwardRef<
 });
 TableCell.displayName = "TableCell";
 
+/**
+ * TableCaption receives extra prop from @ihv/react-hook-table.
+ * alignment - to adjust caption alignment. Default is "top-center".
+ */
 const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLTableCaptionElement> & TableCaptionProps
+>(({ className, alignment, ...rest }, ref) => (
   <caption
     ref={ref}
-    className={cn("mt-4 text-sm text-muted-foreground", className)}
-    {...props}
+    className={cn(
+      "mt-4 text-sm text-muted-foreground",
+      captionClasses({ alignment }),
+      className
+    )}
+    {...rest}
   />
 ));
 TableCaption.displayName = "TableCaption";
+
+const TableValue = () => {
+  return <div></div>;
+};
 
 export {
   Table,

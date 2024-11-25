@@ -30,8 +30,10 @@ function App() {
       isLoading={false}
       caption={{
         value: "Example table rendering with chadcn/ui table elements",
+        alignment: "bottom-center",
       }}
     >
+      {/* TODO: figure out shadcn/ui matching row expander element & expanded area styling */}
       {/* <Column
         expandable
         defaultExpanded={({ id }) => ["Row 2", "Row 4"].includes(id)}
