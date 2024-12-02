@@ -5,8 +5,10 @@ import { cva } from "class-variance-authority";
 import {
   ColumnAlignmentProps,
   TableCaptionProps,
+  TableExpanderProps,
   TableRowProps,
 } from "@ihv/react-hook-table";
+import { LucideChevronDown, LucideChevronRight } from "lucide-react";
 
 /**
  * @ihv/react-hook-table alignment classes
@@ -22,6 +24,12 @@ const columnClasses = cva("", {
       true: "align-top",
       false: "align-middle",
     },
+    expandable: {
+      true: "p-0",
+    },
+    isSubrow: {
+      true: "bg-white, border-bottom-0",
+    },
   },
   defaultVariants: {
     alignment: "left",
@@ -31,7 +39,7 @@ const columnClasses = cva("", {
 const captionClasses = cva("", {
   variants: {
     alignment: {
-      "top-left": "caption-top text-left ",
+      "top-left": "caption-top text-left border-b",
       "top-center": "caption-top text-center",
       "top-right": "caption-top text-right",
       "bottom-left": "caption-bottom text-left",
@@ -62,7 +70,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+  <thead ref={ref} className={cn("[&>tr]:border-b", className)} {...props} />
 ));
 TableHeader.displayName = "TableHeader";
 
@@ -72,7 +80,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("[&>tr:last-child]:border-0", className)}
     {...props}
   />
 ));
@@ -93,15 +101,24 @@ const TableFooter = React.forwardRef<
 ));
 TableFooter.displayName = "TableFooter";
 
+const rowClasses = cva("", {
+  variants: {
+    subrow: {
+      true: "bg-muted hover:bg-muted [&>td>*]:bg-white [&>td>*]:rounded-sm [&>td>*]:border",
+    },
+  },
+});
+
 const TableRow = React.forwardRef<
   HTMLTableRowElement,
   React.HTMLAttributes<HTMLTableRowElement> & TableRowProps
->(({ className, expanded, ...props }, ref) => {
+>(({ className, expanded, subrow, ...props }, ref) => {
   return (
     <tr
       ref={ref}
       className={cn(
         "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        rowClasses({ subrow }),
         className
       )}
       {...props}
@@ -140,21 +157,22 @@ TableHead.displayName = "TableHead";
  * TableCell receives  couple of extra props from @ihv/react-hook-table.
  * alignment - to adjust column alignment. Default is "left".
  * isMultiValue - boolean that indicates if some of the cells has multiple headers.
+ * expandable - boolean that indicates if the cell contains row expander button.
  * Can be used to adjust vertical alignment for example.
  */
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement> &
-    ColumnAlignmentProps & { expandable?: boolean }
+    ColumnAlignmentProps & { expandable?: boolean; isSubRow?: boolean }
 >(({ className, ...props }, ref) => {
-  const { alignment, isMultiValue, expandable, ...rest } = props;
+  const { alignment, isMultiValue, expandable, isSubRow, ...rest } = props;
 
   return (
     <td
       ref={ref}
       className={cn(
         "p-2 align-middle text-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        columnClasses({ alignment, isMultiValue }),
+        columnClasses({ alignment, isMultiValue, expandable }),
         className
       )}
       {...rest}
@@ -174,7 +192,7 @@ const TableCaption = React.forwardRef<
   <caption
     ref={ref}
     className={cn(
-      "mt-4 text-sm text-muted-foreground",
+      "p-3 text-sm text-muted-foreground",
       captionClasses({ alignment }),
       className
     )}
@@ -183,11 +201,18 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = "TableCaption";
 
-const TableValue = () => {
-  return <div></div>;
-};
+const Expander = ({ isOpen, setIsOpen }: TableExpanderProps) => (
+  <button type="button" onClick={() => setIsOpen(!isOpen)} className="p-2">
+    {isOpen ? (
+      <LucideChevronDown size={14} className="text-muted-foreground" />
+    ) : (
+      <LucideChevronRight size={14} className="text-muted-foreground" />
+    )}
+  </button>
+);
 
 export {
+  Expander,
   Table,
   TableHeader,
   TableBody,

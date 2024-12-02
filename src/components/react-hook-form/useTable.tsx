@@ -8,6 +8,7 @@ import {
 } from "./format-functions";
 import { MoneyType } from "@/mock-data";
 import {
+  Expander,
   Table,
   TableBody,
   TableCaption,
@@ -35,6 +36,7 @@ export const useTable = <T extends TableRecord = TableRecord>() => {
     },
     translate,
     components: {
+      Expander,
       Table,
       TableHeader,
       TableHead,
