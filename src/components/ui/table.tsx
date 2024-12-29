@@ -28,7 +28,10 @@ const columnClasses = cva("", {
       true: "p-0",
     },
     isSubrow: {
-      true: "bg-white, border-bottom-0",
+      true: "bg-white, border-bottom-0 pt-0",
+    },
+    wrap: {
+      true: "text-wrap",
     },
   },
   defaultVariants: {
@@ -119,6 +122,7 @@ const TableRow = React.forwardRef<
       className={cn(
         "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
         rowClasses({ subrow }),
+        expanded && "bg-muted border-b-0 hover:bg-muted",
         className
       )}
       {...props}
@@ -163,16 +167,27 @@ TableHead.displayName = "TableHead";
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement> &
-    ColumnAlignmentProps & { expandable?: boolean; isSubRow?: boolean }
+    ColumnAlignmentProps & {
+      expandable?: boolean;
+      isSubRow?: boolean;
+      wrap?: boolean;
+    }
 >(({ className, ...props }, ref) => {
-  const { alignment, isMultiValue, expandable, isSubRow, ...rest } = props;
+  const { alignment, isMultiValue, expandable, wrap, isSubRow, ...rest } =
+    props;
 
   return (
     <td
       ref={ref}
       className={cn(
         "p-2 align-middle text-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        columnClasses({ alignment, isMultiValue, expandable }),
+        columnClasses({
+          alignment,
+          isMultiValue,
+          expandable,
+          wrap,
+          isSubrow: isSubRow,
+        }),
         className
       )}
       {...rest}
