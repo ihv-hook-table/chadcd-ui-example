@@ -8,12 +8,16 @@ import {
   TableExpanderProps,
   TableRowProps,
 } from "@ihv/react-hook-table";
-import { LucideChevronDown, LucideChevronRight } from "lucide-react";
+import {
+  LucideChevronDown,
+  LucideChevronRight,
+  LucideCircleX,
+} from "lucide-react";
 
 /**
- * @ihv/react-hook-table alignment classes
+ * @ihv/react-hook-table extra css for shadcn/ui table elements.
  */
-const columnClasses = cva("", {
+const cellClasses = cva("", {
   variants: {
     alignment: {
       left: "text-left",
@@ -27,7 +31,7 @@ const columnClasses = cva("", {
     expandable: {
       true: "p-0",
     },
-    isSubrow: {
+    isSubRow: {
       true: "bg-white, border-bottom-0 pt-0",
     },
     wrap: {
@@ -133,9 +137,8 @@ TableRow.displayName = "TableRow";
 
 /**
  * TableHead receives  couple of extra props from @ihv/react-hook-table.
- * alignment - to adjust column alignment. Default is "left".
+ * alignment    - to adjust column alignment. Default is "left".
  * isMultiValue - boolean that indicates if some of the cells has multiple headers.
- * Can be used to adjust vertical alignment for example.
  */
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
@@ -148,7 +151,7 @@ const TableHead = React.forwardRef<
       ref={ref}
       className={cn(
         "h-10 px-2 text-nowrap text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        columnClasses({ alignment, isMultiValue }),
+        cellClasses({ alignment, isMultiValue }),
         className
       )}
       {...rest}
@@ -159,10 +162,11 @@ TableHead.displayName = "TableHead";
 
 /**
  * TableCell receives  couple of extra props from @ihv/react-hook-table.
- * alignment - to adjust column alignment. Default is "left".
+ * alignment    - to adjust column alignment. Default is "left".
  * isMultiValue - boolean that indicates if some of the cells has multiple headers.
- * expandable - boolean that indicates if the cell contains row expander button.
- * Can be used to adjust vertical alignment for example.
+ * expandable   - boolean that indicates if the cell contains row expander button.
+ * isSubrow     - can be used to adjust vertical alignment for example.
+ * wrap         - boolean that indicates if the cell should wrap text.
  */
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
@@ -181,12 +185,12 @@ const TableCell = React.forwardRef<
       ref={ref}
       className={cn(
         "p-2 align-middle text-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        columnClasses({
+        cellClasses({
           alignment,
           isMultiValue,
           expandable,
           wrap,
-          isSubrow: isSubRow,
+          isSubRow,
         }),
         className
       )}
@@ -216,15 +220,25 @@ const TableCaption = React.forwardRef<
 ));
 TableCaption.displayName = "TableCaption";
 
-const Expander = ({ isOpen, setIsOpen }: TableExpanderProps) => (
-  <button type="button" onClick={() => setIsOpen(!isOpen)} className="p-2">
-    {isOpen ? (
-      <LucideChevronDown size={14} className="text-muted-foreground" />
-    ) : (
-      <LucideChevronRight size={14} className="text-muted-foreground" />
-    )}
-  </button>
-);
+const Expander = ({ isOpen, toggle, identifier }: TableExpanderProps) => {
+  if (identifier === "delete") {
+    return (
+      <button type="button" onClick={toggle} className="p-2">
+        <LucideCircleX size={14} className="text-muted-foreground" />
+      </button>
+    );
+  }
+
+  return (
+    <button type="button" onClick={toggle} className="p-2">
+      {isOpen ? (
+        <LucideChevronDown size={14} className="text-muted-foreground" />
+      ) : (
+        <LucideChevronRight size={14} className="text-muted-foreground" />
+      )}
+    </button>
+  );
+};
 
 export {
   Expander,

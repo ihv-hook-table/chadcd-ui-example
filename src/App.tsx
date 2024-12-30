@@ -2,6 +2,7 @@ import "./App.css";
 import { useTable } from "@/components/react-hook-form/useTable";
 import { AdditionalData, mockData, TableData } from "./mock-data";
 import { formatMoney } from "@/components/react-hook-form/format-functions";
+import { Confirm } from "./components/ui/confirm";
 
 type SubTableProps = {
   data: AdditionalData;
@@ -15,7 +16,12 @@ const Subtable = ({ data }: SubTableProps) => {
       <Column accessor="description" />
       <Column accessor="category" />
       <Column accessor="supplier" />
-      <Column accessor="inStock" format="boolean" />
+      <Column
+        accessor="inStock"
+        format="boolean"
+        alignment="center"
+        header="In stock"
+      />
       <Column accessor="rating" alignment="right" />
     </Table>
   );
@@ -64,6 +70,11 @@ function App() {
               currency: price.currency,
             })
           }
+        </Column>
+        <Column expandable="delete" colWidth={1}>
+          {({ id }, { closeSubrow }) => (
+            <Confirm id={id} onClose={closeSubrow} />
+          )}
         </Column>
       </Table>
     </div>
